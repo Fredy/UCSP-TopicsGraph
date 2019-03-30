@@ -67,6 +67,8 @@ def _rotate_pos(point, center, angle):
 def exp_filter(x):
     return pow(x, 2.5) % 255
 
+def exp_filter_B(x):
+    return pow(x / 255, 2.5) * 255
 
 @np.vectorize
 def log_filter(x):
@@ -74,6 +76,13 @@ def log_filter(x):
         return 0
     x /= 255
     return (log(x) * 255) % 255
+
+@np.vectorize
+def log_filter_B(x):
+    if x == 0:
+        return 0
+    x /= 255
+    return 0 if log(x) < log(0.5) else 255
 
 @np.vectorize
 def inverse_filter(x):
@@ -96,5 +105,7 @@ if __name__ == "__main__":
     cv2.imwrite('res/downscale.jpg', resize(img, 0.4, 0.4))
 
     cv2.imwrite('res/exp.jpg', exp_filter(img))
+    cv2.imwrite('res/expB.jpg', exp_filter_B(img))
     cv2.imwrite('res/log.jpg', log_filter(img))
+    cv2.imwrite('res/logB.jpg', log_filter_B(img))
     cv2.imwrite('res/inverse.jpg', inverse_filter(img))
