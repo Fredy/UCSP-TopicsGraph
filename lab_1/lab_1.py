@@ -6,14 +6,18 @@ from math import (cos, sin, radians, floor, ceil, exp, log)
 
 def translation(src, x, y):
     out = np.zeros(src.shape, src.dtype)
-    X, Y, _ = src.shape
+    X, Y = src.shape[:2]
     out[-X + x: X + x, -Y + y: Y + y] = src[-X - x: X - x, -Y - y: Y - y]
     return out
 
 
 def resize(src, xfactor, yfactor):
-    rows, cols, c = src.shape
-    shape = (floor(rows * yfactor), floor(cols * xfactor), c)
+    rows, cols = src.shape[:2]
+    if len(shape) == 2:
+        shape = (floor(rows * yfactor), floor(cols * xfactor))
+    else:
+        shape = (floor(rows * yfactor), floor(cols * xfactor), shape[2])
+
     out = np.empty(shape, src.dtype)
 
     for i in range(shape[0]):
@@ -90,7 +94,7 @@ def inverse_filter(x):
 
 
 if __name__ == "__main__":
-    img = cv2.imread('../imgs/woman.jpg')
+    img = cv2.imread('../imgs/woman.jpg', 0)
 
     os.makedirs('res', exist_ok=True)
 
