@@ -12,6 +12,7 @@ def translation(src, x, y):
 
 
 def resize(src, xfactor, yfactor):
+    shape = src.shape
     rows, cols = src.shape[:2]
     if len(shape) == 2:
         shape = (floor(rows * yfactor), floor(cols * xfactor))
@@ -94,7 +95,7 @@ def inverse_filter(x):
 
 
 if __name__ == "__main__":
-    img = cv2.imread('../imgs/woman.jpg', 0)
+    img = cv2.imread('../imgs/cameraman.jpg', 0)
 
     os.makedirs('res', exist_ok=True)
 
@@ -103,7 +104,7 @@ if __name__ == "__main__":
     cv2.imwrite('res/translation_positive.jpg', positive)
     cv2.imwrite('res/translation_negative.jpg', negative)
 
-    cv2.imwrite('res/rotate.jpg', rotate(img, 15))
+    cv2.imwrite('res/rotate.jpg', rotate(img, 90))
 
     cv2.imwrite('res/upscale.jpg', resize(img, 3, 3))
     cv2.imwrite('res/downscale.jpg', resize(img, 0.4, 0.4))
