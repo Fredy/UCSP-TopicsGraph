@@ -84,7 +84,29 @@ def roberts(src):
             out[i, j] = min(255, outx + outy)
 
     return out
-# laplace
+
+
+def laplace(src):
+    out = np.zeros(src.shape, src.dtype)
+    kernel = np.array([
+        [0, 1, 0],
+        [1, -4, 1],
+        [0, 1, 0]
+    ])
+
+    rows, cols = img.shape[:2]
+
+    for i in range(1, rows-1):
+        r0 = i - 1
+        r1 = i + 2
+        for j in range(1, cols - 1):
+            c0 = j - 1
+            c1 = j + 2
+            window = src[r0:r1, c0: c1]
+            out_tmp = abs((window * kernel).sum())
+            out[i, j] = min(255, out_tmp)
+
+    return out
 
 
 if __name__ == "__main__":
@@ -99,7 +121,7 @@ if __name__ == "__main__":
 
     os.makedirs('res', exist_ok=True)
 
-    with Pool(processes=3) as pool:
+    with Pool(processes=4) as pool:
         res_sobel = pool.apply_async(
             sobel, (img,),
             callback=lambda x: cv2.imwrite('res/sobel.jpg', x)
@@ -113,6 +135,12 @@ if __name__ == "__main__":
             callback=lambda x: cv2.imwrite('res/roberts.jpg', x)
         )
 
-        res_sobel = res_sobel.get()
-        res_prewitt = res_prewitt.get()
-        res_roberts = res_roberts.get()
+        res_laplace = pool.apply_async(
+            laplace, (img,),
+            callback=lambda x: cv2.imwrite('res/laplace.jpg', x)
+        )
+
+        res_sobel.get()
+        res_prewitt.get()
+        res_roberts.get()
+        res_laplace.get()
