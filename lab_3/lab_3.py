@@ -70,7 +70,7 @@ def roberts(src):
         [1, 0],
     ])
 
-    rows, cols = img.shape[:2]
+    rows, cols = src.shape[:2]
 
     for i in range(1, rows-1):
         r0 = i - 1
@@ -94,7 +94,7 @@ def laplace(src):
         [0, 1, 0]
     ])
 
-    rows, cols = img.shape[:2]
+    rows, cols = src.shape[:2]
 
     for i in range(1, rows-1):
         r0 = i - 1

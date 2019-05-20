@@ -12,7 +12,7 @@ def _def_operation(window, *args, **kwargs):
 
 
 def basic_filter(src, window_size, operation=_def_operation):
-    rows, cols = img.shape[:2]
+    rows, cols = src.shape[:2]
 
     out = np.empty(src.shape, src.dtype)
 
@@ -66,7 +66,7 @@ def gaussian_kernel_1D(size, stdev):
 def gauss_filter(src, window_size, stdev):
     out = np.empty(src.shape, src.dtype)
 
-    rows, cols = img.shape[:2]
+    rows, cols = src.shape[:2]
     step = (window_size - 1) // 2
     filter1D = gaussian_kernel_1D(window_size, stdev)
 
