@@ -1,7 +1,6 @@
 import os
 import cv2
 import sys
-from math import acos, sqrt, degrees
 import numpy as np
 
 
@@ -63,7 +62,7 @@ def rgb_to_hsv(src):
 
 
 def rgb_to_hsi(src):
-     # H 0, 360
+    # H 0, 360
     # S 0, 1
     # L 0, 1
     out = src / 255
@@ -104,7 +103,7 @@ def rgb_to_hsi(src):
 def rgb_to_yuv(src):
     out = src / 255
     vals = np.array([
-        [0.299,  0.587, 0.144],
+        [0.299, 0.587, 0.144],
         [-0.147, -0.289, 0.436],
         [0.615, -0.5151, -0.1]
     ])
@@ -118,7 +117,7 @@ def rgb_to_yuv(src):
 def rgb_to_yiq(src):
     out = src / 255
     vals = np.array([
-        [0.299,  0.587, 0.144],
+        [0.299, 0.587, 0.144],
         [0.596, -0.275, -0.321],
         [0.212, -0.523, 0.311]
     ])
@@ -149,23 +148,27 @@ def rgb_to_ycbcr(src):
             # out[i,j] = comp + weights * [Y, Pb, Pr]
             Y = 16 + 65.481 * R + 128.553 * G + 24.966 * B
             Cb = 128 - 37.797 * R - 74.203 * G + 112 * B
-            Cr = 128 + 112*R - 93.786 * G - 18.214 * B
+            Cr = 128 + 112 * R - 93.786 * G - 18.214 * B
 
-            out[i,j] = [Y,Cb, Cr]
+            out[i, j] = [Y, Cb, Cr]
 
     return out
 
 
 if __name__ == "__main__":
-    img_name = '../imgs/2/lenaS.jpg'
-    if len(sys.argv) > 1:
-        img_name = sys.argv[1]
-    img = cv2.imread(img_name, 0)
-
-    if img is None:
-        print('Can not read `{}`'.format(img_name))
+    if len(sys.argv) < 4:
+        print("Syntax: file_name.py R G B")
         exit(-1)
 
-    os.makedirs('res', exist_ok=True)
+    r = int(sys.argv[1])
+    g = int(sys.argv[2])
+    b = int(sys.argv[3])
 
- # ...
+    rgb = np.array([r, g, b], ndmin=3)
+
+    print("CMY:", rgb_to_cmy(rgb)[0, 0])
+    print("HSV:", rgb_to_hsv(rgb)[0, 0])
+    print("HSI:", rgb_to_hsi(rgb)[0, 0])
+    print("YUV:", rgb_to_yuv(rgb)[0, 0])
+    print("YIQ:", rgb_to_yiq(rgb)[0, 0])
+    print("YCbCr:", rgb_to_ycbcr(rgb)[0, 0])
