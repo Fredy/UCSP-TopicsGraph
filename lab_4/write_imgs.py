@@ -4,109 +4,119 @@ import cv2
 import lab_4
 import numpy as np
 
+
 def write_rgb(img, file_name):
     r = np.zeros(img.shape, img.dtype)
-    b = np.zeros(img.shape, img.dtype)
     g = np.zeros(img.shape, img.dtype)
-    r[:,:,0] = img[:, :, 0]  # 0, 255
-    g[:,:,1] = img[:, :, 1]  # 0, 255
-    b[:,:,2] = img[:, :, 2]  # 0, 255
+    b = np.zeros(img.shape, img.dtype)
 
-    tmp = np.append(r,g, axis=1)
-    tmp = np.append(tmp,b, axis=1)
-    cv2.imwrite(file_name + '_rgb.jpg', np.append(tmp, img, axis=1))
-    cv2.imwrite(file_name + '_Rgb.jpg', r)
-    cv2.imwrite(file_name + '_rGb.jpg', g)
-    cv2.imwrite(file_name + '_rgB.jpg', b)
+    r[:, :, 2] = img[:, :, 2]  # 0, 255
+    g[:, :, 1] = img[:, :, 1]  # 0, 255
+    b[:, :, 0] = img[:, :, 0]  # 0, 255
+
+    tmp = np.concatenate((r, g, b, img), axis=1)
+    cv2.imwrite(file_name + '_rgb.jpg', tmp)
+
 
 def write_cmy(img, file_name):
     c = np.zeros(img.shape, img.dtype)
     m = np.zeros(img.shape, img.dtype)
     y = np.zeros(img.shape, img.dtype)
 
-    c[:, :, 0] = img[:, :, 0]  # 0, 255
+    c[:, :, 2] = img[:, :, 2]  # 0, 255
     m[:, :, 1] = img[:, :, 1]  # 0, 255
-    y[:, :, 2] = img[:, :, 2]  # 0, 255
+    y[:, :, 0] = img[:, :, 0]  # 0, 255
 
-    tmp = np.append(c,m, axis=1)
-    tmp = np.append(tmp,y, axis=1)
-    cv2.imwrite(file_name + '_cmy.jpg', np.append(tmp, img, axis=1) )
-    cv2.imwrite(file_name + '_Cmy.jpg', c)
-    cv2.imwrite(file_name + '_cMy.jpg', m)
-    cv2.imwrite(file_name + '_cmY.jpg', y)
+    tmp = np.concatenate((c, m, y, img), axis=1)
+    cv2.imwrite(file_name + '_cmy.jpg', tmp)
 
 
 def write_hsv(img, file_name):
+    norm = np.empty(img.shape, img.dtype)
+    norm[..., 0] = img[..., 0] / 360 * 255  # 0, 360
+    norm[..., 1] = img[..., 1] * 255  # 0, 1
+    norm[..., 2] = img[..., 2] * 255  # 0, 1
+
     h = np.zeros(img.shape, img.dtype)
     s = np.zeros(img.shape, img.dtype)
     v = np.zeros(img.shape, img.dtype)
 
+    h[..., 0] = norm[..., 0]
+    s[..., 1] = norm[..., 1]
+    v[..., 2] = norm[..., 2]
 
-    h[:,:,0] = img[:, :, 0] /360 * 255  # 0, 360
-    s[:,:,1] = img[:, :, 1] * 255  # 0, 1
-    v[:,:,2] = img[:, :, 2] *255 # 0, 1
+    tmp = np.concatenate((h, s, v, norm), axis=1)
+    tmp2 = np.concatenate((h[..., 0], s[..., 1], v[..., 2]), axis=1)
+    cv2.imwrite(file_name + '_hsv.jpg', tmp)
+    cv2.imwrite(file_name + '_hsv_.jpg', tmp2)
 
-    tmp = np.append(h,s, axis=1)
-    tmp = np.append(tmp,v, axis=1)
-    cv2.imwrite(file_name + '_hsv.jpg', np.append(tmp, img, axis= 1))
-    cv2.imwrite(file_name + '_Hsv.jpg', h)
-    cv2.imwrite(file_name + '_hSv.jpg', s )
-    cv2.imwrite(file_name + '_hsV.jpg', v )
 
 def write_hsi(img, file_name):
+    norm = np.empty(img.shape, img.dtype)
+    norm[..., 0] = img[..., 0] / 360 * 255  # 0, 360
+    norm[..., 1] = img[..., 1] * 255  # 0, 1
+    norm[..., 2] = img[..., 2] * 255  # 0, 1
+
     h = np.zeros(img.shape, img.dtype)
     s = np.zeros(img.shape, img.dtype)
-    v = np.zeros(img.shape, img.dtype)
+    i = np.zeros(img.shape, img.dtype)
 
+    h[..., 0] = norm[..., 0]
+    s[..., 1] = norm[..., 1]
+    i[..., 2] = norm[..., 2]
 
-    h[:,:,0] = img[:, :, 0] / 360 * 255  # 0, 360
-    s[:,:,1] = img[:, :, 1] * 255  # 0, 1
-    v[:,:,2] = img[:, :, 2] * 255 # 0, 1
+    tmp = np.concatenate((h, s, i, norm), axis=1)
+    tmp2 = np.concatenate((h[..., 0], s[..., 1], i[..., 2]), axis=1)
+    cv2.imwrite(file_name + '_hsi.jpg', tmp)
+    cv2.imwrite(file_name + '_hsi_.jpg', tmp2)
 
-    tmp = np.append(h,s, axis=1)
-    tmp = np.append(tmp,v, axis=1)
-    cv2.imwrite(file_name + '_hsi.jpg', np.append(tmp, img, axis= 1))
-    cv2.imwrite(file_name + '_Hsi.jpg', h )
-    cv2.imwrite(file_name + '_hSi.jpg', s )
-    cv2.imwrite(file_name + '_hsI.jpg', i )
 
 def write_yuv(img, file_name):
-    y[:,:,0] = img[:, :, 0]  # 0, 255
-    u[:,:,1] = img[:, :, 1]  # -128, 127
-    v[:,:,2] = img[:, :, 2]  # -128, 127
+    norm = np.empty(img.shape, img.dtype)
+    norm[..., 0] = img[..., 0] * 255  # 0,255
+    norm[..., 1:] = (img[..., 1:] + 0.5) * 255  # -127, 128
 
-    tmp = np.append(y,u, axis=1)
-    tmp = np.append(tmp,v, axis=1)
-    cv2.imwrite(file_name + '_yuv.jpg', np.appen(tmp, img, axis=1))
-    cv2.imwrite(file_name + '_Yuv.jpg', y * 255)
-    cv2.imwrite(file_name + '_yUv.jpg', (u + 0.5) * 255)
-    cv2.imwrite(file_name + '_yuV.jpg', (v + 0.5) * 255)
+    y = np.zeros(img.shape, img.dtype)
+    u = np.zeros(img.shape, img.dtype)
+    v = np.zeros(img.shape, img.dtype)
+
+    y[..., 0] = norm[..., 0]
+    u[..., 1] = norm[..., 1]
+    v[..., 2] = norm[..., 2]
+
+    tmp = np.concatenate((y, u, v, norm), axis=1)
+    cv2.imwrite(file_name + '_yuv.jpg', tmp)
 
 
 def write_yiq(img, file_name):
-    y[:,:,0] = img[:, :, 0]  # 0, 1
-    i[:,:,1] = img[:, :, 1]  # -0.523, 0.523
-    q[:,:,2] = img[:, :, 2]  # -0.596, 0.596
+    norm = np.empty(img.shape, img.dtype)
+    norm[..., 0] = img[..., 0] * 255  # 0,1
+    norm[..., 1] = (img[..., 1] + 0.523) / (0.523 * 2) * 255  # -0.523, 0.523
+    norm[..., 2] = (img[..., 2] + 0.592) / (0.596 * 2) * 255  # -0.596, 0.596
 
-    tmp = np.append(y,i, axis=1)
-tmp = np.append(tmp,q, axis=1)
-    cv2.imwrite(file_name + '_yiq.jpg', np.append(tmp, img, axis=1))
-    cv2.imwrite(file_name + '_Yiq.jpg', y * 255)
-    cv2.imwrite(file_name + '_yIq.jpg', (i + 0.523) / (0.523 * 2) * 255)
-    cv2.imwrite(file_name + '_yiQ.jpg', (q + 0.592) / (0.596 * 2) * 255)
+    y = np.zeros(img.shape, img.dtype)
+    i = np.zeros(img.shape, img.dtype)
+    q = np.zeros(img.shape, img.dtype)
+
+    y[..., 0] = norm[..., 0]
+    i[..., 1] = norm[..., 1]
+    q[..., 2] = norm[..., 2]
+
+    tmp = np.concatenate((y, i, q, norm), axis=1)
+    cv2.imwrite(file_name + '_yiq.jpg', tmp)
 
 
 def write_ycbcr(img, file_name):
-    y[:,:,0] = img[:, :, 0]  # 0, 1
-    cb[:,:,1] = img[:, :, 1]  # 0, 1
-    cr[:,:,2] = img[:, :, 2]  # 0, 1
+    y = np.zeros(img.shape, img.dtype)
+    cb = np.zeros(img.shape, img.dtype)
+    cr = np.zeros(img.shape, img.dtype)
 
-    tmp = np.append(y,cb, axis=1)
-    tmp = np.append(tmp,cr, axis=1)
-    cv2.imwrite(file_name + '_ycbcr.jpg', np.append(tmp,img, axis=1))
-    cv2.imwrite(file_name + '_Ycbcr.jpg', y)
-    cv2.imwrite(file_name + '_yCBcr.jpg', cb)
-    cv2.imwrite(file_name + '_ycbCR.jpg', cr)
+    y[..., 0] = img[..., 0]  # 0, 255
+    cb[..., 1] = img[..., 1]  # 0, 255
+    cr[..., 2] = img[..., 2]  # 0, 255
+
+    tmp = np.concatenate((y, cb, cr, img), axis=1)
+    cv2.imwrite(file_name + '_ycbcr.jpg', tmp)
 
 
 if __name__ == "__main__":
@@ -124,8 +134,8 @@ if __name__ == "__main__":
     out_file_name = os.path.join('res', os.path.basename(img_name))
     write_rgb(img, out_file_name)
     write_cmy(lab_4.rgb_to_cmy(img), out_file_name)
-    write_hsv(lab_4.rgb_to_hsv(img), out_file_name)
-    write_hsi(lab_4.rgb_to_hsi(img), out_file_name)
-    write_yuv(lab_4.rgb_to_yuv(img), out_file_name)
-    write_yiq(lab_4.rgb_to_yiq(img), out_file_name)
-    write_ycbcr(lab_4.rgb_to_ycbcr(img), out_file_name)
+    write_hsv(lab_4.rgb_to_hsv(img[:, :, ::-1]), out_file_name)
+    write_hsi(lab_4.rgb_to_hsi(img[..., ::-1]), out_file_name)
+    write_yuv(lab_4.rgb_to_yuv(img[..., ::-1]), out_file_name)
+    write_yiq(lab_4.rgb_to_yiq(img[..., ::-1]), out_file_name)
+    write_ycbcr(lab_4.rgb_to_ycbcr(img[..., ::-1]), out_file_name)
